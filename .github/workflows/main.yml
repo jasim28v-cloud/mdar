@@ -1,0 +1,55 @@
+name: 🏢 Madar Tech Auto Builder
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    
+    steps:
+    - name: 📥 استنساخ
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: 🐍 إعداد Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: 📦 تثبيت
+      run: pip install -r requirements.txt
+    
+    - name: 🏗️ بناء الموقع
+      run: python scraper.py
+    
+    - name: 🔄 حفظ
+      run: |
+        git config user.name 'Madar Tech Bot'
+        git config user.email 'bot@madar-tech.com'
+        git add index.html data/ -f
+        git diff --staged --quiet || git commit -m "🏢 تحديث تلقائي - $(date +'%Y-%m-%d %H:%M')"
+        git push origin main
+    
+    - name: 📤 نشر GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
+        publish_branch: gh-pages
+        commit_message: '🚀 نشر مدار التقني'
+    
+    - name: ✅ تم
+      run: echo "✅ موقع مدار التقني جاهز!"
