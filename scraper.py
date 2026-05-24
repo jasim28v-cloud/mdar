@@ -1,1180 +1,617 @@
 #!/usr/bin/env python3
 """
-🏢 مدار التقني - معرض القوالب الاحترافي
-موقع يعرض قوالب المواقع والتطبيقات بتصميم زجاجي عصري
+╔══════════════════════════════════════════════════════════════╗
+║                                                            ║
+║  💖  MADAR ALTECHNIA - قوالب مواقع احترافية  💖           ║
+║     Website Templates Showcase Generator                   ║
+║                                                            ║
+║  🏢  شركة مدار التقنية                                    ║
+║  📱  تواصل: @Go21mk على تليغرام                          ║
+║  📅  تاريخ اليوم مدمج تلقائي                              ║
+║  🎨  جميع قوالب الديكور للمواقع                           ║
+║                                                            ║
+╚══════════════════════════════════════════════════════════════╝
 """
 
 import os
-import json
+import sys
 from datetime import datetime
-from pathlib import Path
 
-class MadarTechBuilder:
-    def __init__(self):
-        # معلومات الشركة
-        self.company = {
-            "name": "مدار التقني",
-            "name_en": "Madar Tech",
-            "slogan": "قوالب احترافية لمستقبل رقمي أفضل",
-            "telegram": "@Go21mk",
-            "email": "contact@madar-tech.com",
-            "location": "المملكة العربية السعودية",
-            "stats": {
-                "templates": "500+",
-                "clients": "150+",
-                "downloads": "10K+",
-                "rating": "4.9"
-            }
-        }
-        
-        # قوالب المواقع (مثل موقع bowwe)
-        self.templates = [
-            {
-                "id": 1,
-                "title": "متجر إلكتروني متكامل",
-                "category": "متاجر",
-                "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600",
-                "description": "قالب متجر متكامل مع نظام دفع وسلة مشتريات ولوحة تحكم",
-                "perfect_for": ["رواد الأعمال", "أصحاب المتاجر", "العلامات التجارية"],
-                "features": ["سلة مشتريات", "بوابة دفع", "لوحة تحكم", "متجاوب"],
-                "rating": 4.9,
-                "sales": 1234,
-                "price": "199",
-                "badge": "الأكثر مبيعاً",
-                "tech": ["React", "Node.js", "MongoDB"]
-            },
-            {
-                "id": 2,
-                "title": "شركة وأعمال احترافي",
-                "category": "شركات",
-                "image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600",
-                "description": "تصميم عصري للشركات والمؤسسات الكبرى مع صفحات متعددة",
-                "perfect_for": ["الشركات", "المؤسسات", "وكالات التسويق"],
-                "features": ["صفحات متعددة", "مدونة", "معرض أعمال", "SEO"],
-                "rating": 4.8,
-                "sales": 987,
-                "price": "149",
-                "badge": "جديد",
-                "tech": ["HTML5", "CSS3", "JavaScript"]
-            },
-            {
-                "id": 3,
-                "title": "تطبيق جوال عصري",
-                "category": "تطبيقات",
-                "image": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600",
-                "description": "واجهة تطبيق جوال عصرية بتصميم زجاجي جذاب",
-                "perfect_for": ["مطوري التطبيقات", "الشركات الناشئة", "المصممين"],
-                "features": ["واجهة مستخدم", "حركات سلسة", "Dark Mode", "متعدد اللغات"],
-                "rating": 4.9,
-                "sales": 2341,
-                "price": "249",
-                "badge": "شائع",
-                "tech": ["Flutter", "Dart", "Firebase"]
-            },
-            {
-                "id": 4,
-                "title": "لوحة تحكم تحليلات",
-                "category": "لوحات تحكم",
-                "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600",
-                "description": "داشبورد احترافي لإدارة البيانات والإحصائيات",
-                "perfect_for": ["محللي البيانات", "المدراء", "الشركات التقنية"],
-                "features": ["رسوم بيانية", "تقارير", "صلاحيات", "تصدير بيانات"],
-                "rating": 4.7,
-                "sales": 876,
-                "price": "299",
-                "badge": "",
-                "tech": ["Vue.js", "Chart.js", "Python"]
-            },
-            {
-                "id": 5,
-                "title": "بورتفوليو شخصي",
-                "category": "شخصي",
-                "image": "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?w=600",
-                "description": "بورتفوليو شخصي احترافي للمطورين والمصممين",
-                "perfect_for": ["المطورين", "المصممين", "المصورين", "الفنانين"],
-                "features": ["سيرة ذاتية", "معرض أعمال", "مدونة", "تواصل"],
-                "rating": 4.8,
-                "sales": 1567,
-                "price": "99",
-                "badge": "",
-                "tech": ["React", "Gatsby", "GraphQL"]
-            },
-            {
-                "id": 6,
-                "title": "منصة تعليمية",
-                "category": "تعليم",
-                "image": "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600",
-                "description": "نظام إدارة تعلم متكامل مع فيديوهات واختبارات",
-                "perfect_for": ["المعلمين", "المدربين", "المؤسسات التعليمية"],
-                "features": ["دورات", "اختبارات", "شهادات", "بث مباشر"],
-                "rating": 4.9,
-                "sales": 1890,
-                "price": "349",
-                "badge": "الأكثر مبيعاً",
-                "tech": ["Next.js", "Prisma", "PostgreSQL"]
-            },
-            {
-                "id": 7,
-                "title": "مطعم وكافيه",
-                "category": "مطاعم",
-                "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600",
-                "description": "موقع مطعم عصري مع قائمة طعام وطلب أونلاين",
-                "perfect_for": ["المطاعم", "المقاهي", "خدمات التوصيل"],
-                "features": ["قائمة طعام", "طلب أونلاين", "حجز طاولة", "توصيل"],
-                "rating": 4.6,
-                "sales": 654,
-                "price": "179",
-                "badge": "",
-                "tech": ["React", "Express", "MySQL"]
-            },
-            {
-                "id": 8,
-                "title": "فندق ومنتجع",
-                "category": "فنادق",
-                "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600",
-                "description": "موقع فندقي فاخر مع نظام حجز وعرض الغرف",
-                "perfect_for": ["الفنادق", "المنتجعات", "بيوت الضيافة"],
-                "features": ["حجز غرف", "معرض صور", "عروض", "تقييمات"],
-                "rating": 4.7,
-                "sales": 432,
-                "price": "249",
-                "badge": "جديد",
-                "tech": ["WordPress", "PHP", "MySQL"]
-            },
-            {
-                "id": 9,
-                "title": "مدونة تقنية",
-                "category": "مدونات",
-                "image": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600",
-                "description": "مدونة عصرية للمحتوى التقني مع تصميم نظيف",
-                "perfect_for": ["المدونين", "الكتّاب", "المسوقين"],
-                "features": ["مقالات", "تصنيفات", "مشاركة", "نشرة بريدية"],
-                "rating": 4.5,
-                "sales": 765,
-                "price": "79",
-                "badge": "",
-                "tech": ["Gatsby", "Markdown", "Netlify"]
-            },
-            {
-                "id": 10,
-                "title": "وكالة تسويق رقمي",
-                "category": "وكالات",
-                "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600",
-                "description": "موقع وكالة تسويقية احترافي مع عرض الخدمات",
-                "perfect_for": ["وكالات التسويق", "المسوقين", "الاستشاريين"],
-                "features": ["خدمات", "دراسات حالة", "فريق", "عروض أسعار"],
-                "rating": 4.8,
-                "sales": 543,
-                "price": "199",
-                "badge": "شائع",
-                "tech": ["Next.js", "Tailwind", "Stripe"]
-            },
-            {
-                "id": 11,
-                "title": "عيادة طبية",
-                "category": "طبي",
-                "image": "https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600",
-                "description": "موقع عيادة طبية مع نظام حجز مواعيد",
-                "perfect_for": ["الأطباء", "العيادات", "المراكز الطبية"],
-                "features": ["حجز مواعيد", "ملف مريض", "أطباء", "خدمات"],
-                "rating": 4.7,
-                "sales": 321,
-                "price": "249",
-                "badge": "",
-                "tech": ["Laravel", "Vue.js", "MySQL"]
-            },
-            {
-                "id": 12,
-                "title": "صالة رياضية",
-                "category": "رياضة",
-                "image": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600",
-                "description": "موقع صالة رياضية مع جداول تمارين وعضويات",
-                "perfect_for": ["الصالات الرياضية", "مدربي اللياقة", "النوادي"],
-                "features": ["جداول", "عضويات", "مدربين", "مدونة صحية"],
-                "rating": 4.6,
-                "sales": 298,
-                "price": "179",
-                "badge": "",
-                "tech": ["React", "Firebase", "Stripe"]
-            }
-        ]
-        
-        # فئات القوالب
-        self.categories = [
-            {"name": "الكل", "icon": "📋", "count": len(self.templates)},
-            {"name": "متاجر", "icon": "🛒", "count": 1},
-            {"name": "شركات", "icon": "🏢", "count": 1},
-            {"name": "تطبيقات", "icon": "📱", "count": 1},
-            {"name": "لوحات تحكم", "icon": "📊", "count": 1},
-            {"name": "شخصي", "icon": "👤", "count": 1},
-            {"name": "تعليم", "icon": "📚", "count": 1},
-            {"name": "مطاعم", "icon": "🍽️", "count": 1},
-            {"name": "فنادق", "icon": "🏨", "count": 1},
-            {"name": "مدونات", "icon": "📝", "count": 1},
-            {"name": "وكالات", "icon": "🎯", "count": 1},
-            {"name": "طبي", "icon": "🏥", "count": 1},
-            {"name": "رياضة", "icon": "💪", "count": 1},
-        ]
-    
-    def generate_html(self):
-        """توليد HTML الموقع الكامل"""
-        
-        # توليد كروت القوالب
-        templates_html = ""
-        for template in self.templates:
-            badge_html = ""
-            if template['badge']:
-                badge_class = "badge-popular" if "مبيعاً" in template['badge'] or "شائع" in template['badge'] else "badge-new"
-                badge_html = f'<span class="template-badge {badge_class}">{template["badge"]}</span>'
-            
-            stars_html = "★" * int(template['rating']) + "☆" * (5 - int(template['rating']))
-            
-            features_html = " ".join([f'<span class="feature-tag">{f}</span>' for f in template['features'][:3]])
-            
-            perfect_for_html = "، ".join(template['perfect_for'])
-            
-            templates_html += f"""
-            <div class="template-card" data-category="{template['category']}" data-aos="fade-up">
-                {badge_html}
-                <div class="template-image-wrapper">
-                    <img src="{template['image']}" alt="{template['title']}" class="template-image" loading="lazy">
-                    <div class="template-overlay">
-                        <a href="#" class="preview-btn">
-                            <i class="fas fa-eye"></i>
-                            معاينة
+# ═══════════════════════════════════════════════════════════
+# 💖 CONFIGURATION - الإعدادات
+# ═══════════════════════════════════════════════════════════
+
+COMPANY_NAME = "مدار التقنية"
+COMPANY_NAME_EN = "Madar Altechnia"
+TELEGRAM_USER = "@Go21mk"
+TELEGRAM_LINK = "https://t.me/Go21mk"
+SITE_TITLE = "قوالب مواقع احترافية"
+SITE_DESC = "أكثر من 50 قالب ديكور احترافي للمواقع - اختر قالبك ودعنا نصنع موقعك"
+TODAY_DATE = datetime.now().strftime("%Y-%m-%d")
+TODAY_DATE_AR = datetime.now().strftime("%d/%m/%Y")
+
+# 💖 قائمة القوالب - جميع قوالب الديكور
+TEMPLATES = [
+    {
+        "id": "personal-trainer",
+        "name": "مدرب شخصي جمالي",
+        "icon": "🏋️",
+        "category": "رياضة ولياقة",
+        "color": "linear-gradient(135deg, #ec4899, #f97316)",
+        "desc": "قالب احترافي للمدربين الشخصيين ومدربي اللياقة البدنية والمراكز الرياضية وأصحاب الصالات الرياضية. يعرض خبرتك في رياضة اللياقة البدنية ويقدم خدماتك بطريقة أنيقة.",
+        "tags": ["مدرب شخصي", "لياقة", "رياضة", "جيم", "صالة رياضية"],
+        "features": ["عرض الخدمات", "جدول الحصص", "نموذج تواصل", "معرض صور", "تقييمات العملاء"],
+        "preview_url": "https://placehold.co/600x400/ec4899/white?text=مدرب+شخصي"
+    },
+    {
+        "id": "tour-guide",
+        "name": "المرشدين السياحيين",
+        "icon": "✈️",
+        "category": "سياحة وسفر",
+        "color": "linear-gradient(135deg, #06b6d4, #3b82f6)",
+        "desc": "ارفع مستوى حضورك في صناعة السفر. اعرض عروضك المذهلة بسلاسة، وأجب عن استفسارات العملاء من خلال قسم الأسئلة الشائعة المفصل، ونموذج حجز سهل.",
+        "tags": ["سياحة", "سفر", "مرشد سياحي", "وكالة سفر", "رحلات"],
+        "features": ["عرض العروض", "الأسئلة الشائعة", "نموذج حجز", "معرض الوجهات", "تقييمات"],
+        "preview_url": "https://placehold.co/600x400/06b6d4/white?text=مرشد+سياحي"
+    },
+    {
+        "id": "photography",
+        "name": "صور احترافية",
+        "icon": "📸",
+        "category": "فنون وإبداع",
+        "color": "linear-gradient(135deg, #8b5cf6, #ec4899)",
+        "desc": "نظّم محفظتك في فئات مميزة لسهولة التنقل في المعرض، وسلط الضوء على التقييمات الرائعة لبناء الثقة مع العملاء المحتملين، مع نموذج اتصال مباشر.",
+        "tags": ["تصوير", "مصور", "معرض صور", "بورتفوليو", "فوتوغرافي"],
+        "features": ["معرض مصنف", "تقييمات", "نموذج تواصل", "عنّي", "الأسعار"],
+        "preview_url": "https://placehold.co/600x400/8b5cf6/white?text=تصوير+احترافي"
+    },
+    {
+        "id": "tattoo-studio",
+        "name": "استوديو الوشم",
+        "icon": "🎨",
+        "category": "فنون وإبداع",
+        "color": "linear-gradient(135deg, #1a1a2e, #e94560)",
+        "desc": "تصميم للتأثير البصري، يتميز بمعرض مذهل لعرض إبداعاتك، وقسم فريقنا، ونموذج اتصال سلس. مثالي للاستوديوهات التي ترغب في الإدلاء ببيان جريء.",
+        "tags": ["وشم", "تاتو", "استوديو", "فن", "تجميل"],
+        "features": ["معرض الأعمال", "فريق العمل", "نموذج حجز", "الأسعار", "تقييمات"],
+        "preview_url": "https://placehold.co/600x400/1a1a2e/white?text=استوديو+وشم"
+    },
+    {
+        "id": "nutritionist",
+        "name": "اختصاصي تغذية",
+        "icon": "🥗",
+        "category": "صحة وتغذية",
+        "color": "linear-gradient(135deg, #10b981, #34d399)",
+        "desc": "قالب معد لخبراء التغذية. اعرض خبرتك من خلال نبذة عني، وأبرز النتائج الإيجابية للعملاء في قسم المراجعات، واتصل بسهولة باستخدام نموذج اتصال مباشر.",
+        "tags": ["تغذية", "صحة", "دايت", "أخصائي", "حمية"],
+        "features": ["نبذة عني", "مراجعات", "نموذج تواصل", "الخدمات", "مقالات"],
+        "preview_url": "https://placehold.co/600x400/10b981/white?text=اختصاصي+تغذية"
+    },
+    {
+        "id": "ski-lessons",
+        "name": "درس التزلج",
+        "icon": "⛷️",
+        "category": "رياضة ولياقة",
+        "color": "linear-gradient(135deg, #3b82f6, #1d4ed8)",
+        "desc": "مصمم خصيصًا لمدربي ومدارس التزلج، يوضح عروض الدروس الخاصة بك، ويوفر جدولًا واضحًا للفصول المتاحة، ويتضمن نموذج حجز سلس للمتعلمين.",
+        "tags": ["تزلج", "رياضة شتوية", "منتجع", "تدريب", "تزلج على الجليد"],
+        "features": ["جدول الدروس", "نموذج حجز", "الأسعار", "المدربون", "معرض"],
+        "preview_url": "https://placehold.co/600x400/3b82f6/white?text=درس+تزلج"
+    },
+    {
+        "id": "restaurant",
+        "name": "مطعم ساحر",
+        "icon": "🍽️",
+        "category": "مطاعم وضيافة",
+        "color": "linear-gradient(135deg, #dc2626, #991b1b)",
+        "desc": "يجسد جوهر تجربة تناول الطعام المبهجة. يتميز بمعرض مذهل لإغراء زبائنك بصريًا، وقائمة مفصلة تعرض عروضك الرائعة في الطهي، ونموذج حجز سهل.",
+        "tags": ["مطعم", "كافيه", "طعام", "قائمة", "حجز"],
+        "features": ["قائمة الطعام", "معرض الصور", "نموذج حجز", "الموقع", "تقييمات"],
+        "preview_url": "https://placehold.co/600x400/dc2626/white?text=مطعم+ساحر"
+    },
+    {
+        "id": "hotel",
+        "name": "فندق فاخر",
+        "icon": "🏨",
+        "category": "فنادق وضيافة",
+        "color": "linear-gradient(135deg, #d4a574, #8b6914)",
+        "desc": "اجعل ضيوفك ينغمسون في رفاهية فندقك من خلال قالب يعرض خدماتك ومعرض مرافقك بشكل رائع، مع توفير نموذج حجز بسيط ومباشر.",
+        "tags": ["فندق", "منتجع", "حجز", "غرف", "ضيافة"],
+        "features": ["عرض الغرف", "الخدمات", "نموذج حجز", "معرض", "الأسئلة الشائعة"],
+        "preview_url": "https://placehold.co/600x400/d4a574/white?text=فندق+فاخر"
+    },
+    {
+        "id": "real-estate",
+        "name": "عقارات فاخرة",
+        "icon": "🏠",
+        "category": "عقارات",
+        "color": "linear-gradient(135deg, #6366f1, #4f46e5)",
+        "desc": "قالب احترافي لعرض العقارات والوحدات السكنية والتجارية، مع نظام بحث متقدم، ومعرض صور جذاب، ونموذج تواصل للاستفسارات.",
+        "tags": ["عقارات", "شقق", "فلل", "بيع", "إيجار"],
+        "features": ["معرض العقارات", "بحث متقدم", "خريطة", "نموذج استفسار", "تقييمات"],
+        "preview_url": "https://placehold.co/600x400/6366f1/white?text=عقارات+فاخرة"
+    },
+    {
+        "id": "clinic",
+        "name": "عيادة طبية",
+        "icon": "🏥",
+        "category": "صحة وطب",
+        "color": "linear-gradient(135deg, #0891b2, #0e7490)",
+        "desc": "قالب احترافي للعيادات والمراكز الطبية، يعرض الخدمات الطبية والأطباء، مع نظام حجز مواعيد ونموذج تواصل سهل.",
+        "tags": ["عيادة", "طبيب", "مستشفى", "حجز", "صحة"],
+        "features": ["حجز مواعيد", "الأطباء", "الخدمات", "التأمين", "اتصل بنا"],
+        "preview_url": "https://placehold.co/600x400/0891b2/white?text=عيادة+طبية"
+    },
+    {
+        "id": "law-firm",
+        "name": "مكتب محاماة",
+        "icon": "⚖️",
+        "category": "قانون وأعمال",
+        "color": "linear-gradient(135deg, #1e293b, #334155)",
+        "desc": "قالب أنيق لمكاتب المحاماة والاستشارات القانونية، يعرض التخصصات وفريق العمل، مع نموذج استشارة أولية.",
+        "tags": ["محامي", "قانون", "استشارة", "محكمة", "شركة"],
+        "features": ["التخصصات", "فريق العمل", "استشارة", "مقالات", "اتصل بنا"],
+        "preview_url": "https://placehold.co/600x400/1e293b/white?text=مكتب+محاماة"
+    },
+    {
+        "id": "barber-shop",
+        "name": "صالون حلاقة",
+        "icon": "💈",
+        "category": "تجميل وعناية",
+        "color": "linear-gradient(135deg, #292524, #44403c)",
+        "desc": "قالب عصري لصالونات الحلاقة الرجالية، يعرض الخدمات والأسعار، مع نظام حجز ونموذج تواصل.",
+        "tags": ["حلاقة", "صالون", "رجالي", "عناية", "حجز"],
+        "features": ["الخدمات", "الأسعار", "نموذج حجز", "معرض", "الموقع"],
+        "preview_url": "https://placehold.co/600x400/292524/white?text=صالون+حلاقة"
+    },
+    {
+        "id": "car-dealer",
+        "name": "معرض سيارات",
+        "icon": "🚗",
+        "category": "سيارات",
+        "color": "linear-gradient(135deg, #dc2626, #7f1d1d)",
+        "desc": "قالب احترافي لمعارض السيارات، يعرض المخزون مع إمكانية البحث والتصفية، ونموذج طلب تجربة قيادة.",
+        "tags": ["سيارات", "معرض", "بيع", "جديد", "مستعمل"],
+        "features": ["معرض السيارات", "بحث", "تجربة قيادة", "تمويل", "اتصل بنا"],
+        "preview_url": "https://placehold.co/600x400/dc2626/white?text=معرض+سيارات"
+    },
+    {
+        "id": "beauty-salon",
+        "name": "صالون تجميل",
+        "icon": "💅",
+        "category": "تجميل وعناية",
+        "color": "linear-gradient(135deg, #ec4899, #f472b6)",
+        "desc": "قالب أنثوي جذاب لصالونات التجميل والسبا، يعرض الخدمات والباقات مع نظام حجز متكامل.",
+        "tags": ["تجميل", "سبا", "نسائي", "عناية", "مكياج"],
+        "features": ["الخدمات", "الباقات", "نموذج حجز", "معرض", "تقييمات"],
+        "preview_url": "https://placehold.co/600x400/ec4899/white?text=صالون+تجميل"
+    },
+    {
+        "id": "tech-company",
+        "name": "شركة تقنية",
+        "icon": "💻",
+        "category": "تقنية وأعمال",
+        "color": "linear-gradient(135deg, #6366f1, #8b5cf6)",
+        "desc": "قالب عصري لشركات التقنية والبرمجيات، يعرض الخدمات والمشاريع السابقة، مع نموذج طلب عرض سعر.",
+        "tags": ["تقنية", "برمجة", "شركة", "IT", "خدمات"],
+        "features": ["الخدمات", "المشاريع", "فريق العمل", "طلب عرض سعر", "المدونة"],
+        "preview_url": "https://placehold.co/600x400/6366f1/white?text=شركة+تقنية"
+    },
+    {
+        "id": "coffee-shop",
+        "name": "مقهى أنيق",
+        "icon": "☕",
+        "category": "مطاعم وضيافة",
+        "color": "linear-gradient(135deg, #92400e, #78350f)",
+        "desc": "قالب دافئ للمقاهي ومحامص القهوة، يعرض قائمة المشروبات والحلويات مع أجواء المقهى المميزة.",
+        "tags": ["قهوة", "مقهى", "كافيه", "مشروبات", "حلويات"],
+        "features": ["قائمة المشروبات", "معرض", "الموقع", "طلب أونلاين", "تقييمات"],
+        "preview_url": "https://placehold.co/600x400/92400e/white?text=مقهى+أنيق"
+    },
+    {
+        "id": "fashion-store",
+        "name": "متجر أزياء",
+        "icon": "👗",
+        "category": "متاجر إلكترونية",
+        "color": "linear-gradient(135deg, #ec4899, #a855f7)",
+        "desc": "قالب أنيق لمتاجر الأزياء والملابس، مع عرض المنتجات بشكل جذاب ونظام طلب سهل.",
+        "tags": ["أزياء", "ملابس", "موضة", "تسوق", "أونلاين"],
+        "features": ["كتالوج المنتجات", "سلة التسوق", "المقاسات", "الشحن", "تقييمات"],
+        "preview_url": "https://placehold.co/600x400/ec4899/white?text=متجر+أزياء"
+    },
+    {
+        "id": "construction",
+        "name": "شركة مقاولات",
+        "icon": "🏗️",
+        "category": "هندسة وإنشاء",
+        "color": "linear-gradient(135deg, #f59e0b, #d97706)",
+        "desc": "قالب احترافي لشركات المقاولات والإنشاءات، يعرض المشاريع السابقة والخدمات بتصميم قوي.",
+        "tags": ["مقاولات", "بناء", "إنشاء", "هندسة", "مشاريع"],
+        "features": ["المشاريع", "الخدمات", "الفريق", "طلب عرض سعر", "اتصل بنا"],
+        "preview_url": "https://placehold.co/600x400/f59e0b/white?text=مقاولات"
+    },
+    {
+        "id": "education",
+        "name": "مؤسسة تعليمية",
+        "icon": "🎓",
+        "category": "تعليم وتدريب",
+        "color": "linear-gradient(135deg, #2563eb, #1d4ed8)",
+        "desc": "قالب مناسب للمدارس والجامعات ومراكز التدريب، يعرض البرامج التعليمية والكادر التدريسي.",
+        "tags": ["تعليم", "مدرسة", "جامعة", "دورات", "تدريب"],
+        "features": ["البرامج", "الكادر", "التسجيل", "الأخبار", "اتصل بنا"],
+        "preview_url": "https://placehold.co/600x400/2563eb/white?text=تعليم"
+    },
+    {
+        "id": "event-planner",
+        "name": "منسق فعاليات",
+        "icon": "🎉",
+        "category": "خدمات",
+        "color": "linear-gradient(135deg, #ec4899, #f59e0b)",
+        "desc": "قالب مبهج لمنسقي الفعاليات والحفلات، يعرض الخدمات والباقات وصور الفعاليات السابقة.",
+        "tags": ["فعاليات", "حفلات", "تنظيم", "أعراس", "مناسبات"],
+        "features": ["الباقات", "معرض الفعاليات", "نموذج استفسار", "تقييمات", "الفريق"],
+        "preview_url": "https://placehold.co/600x400/ec4899/white?text=فعاليات"
+    },
+]
+
+# ═══════════════════════════════════════════════════════════
+# 💖 UTILITY - دوال مساعدة
+# ═══════════════════════════════════════════════════════════
+
+TOTAL_LINES = 0
+
+def write(filename, content):
+    global TOTAL_LINES
+    os.makedirs(os.path.dirname(filename) if os.path.dirname(filename) else '.', exist_ok=True)
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(content)
+    lines = content.count('\n') + 1
+    TOTAL_LINES += lines
+    print(f"  ✅ {filename} ({lines} سطر)")
+
+def section(title):
+    print(f"\n{'='*60}")
+    print(f"  💖 {title}")
+    print(f"{'='*60}")
+
+# ═══════════════════════════════════════════════════════════
+# 💖 توليد HTML الرئيسي - index.html
+# ═══════════════════════════════════════════════════════════
+
+def build_template_card(t):
+    return f"""
+    <div class="template-card" data-category="{t['category']}" onclick="showTemplateDetail('{t['id']}')">
+        <div class="card-image" style="background: {t['color']}">
+            <span class="card-icon">{t['icon']}</span>
+            <div class="card-overlay">
+                <button class="btn-preview" onclick="event.stopPropagation(); showTemplateDetail('{t['id']}')">
+                    <i class="fas fa-eye"></i> معاينة
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <span class="card-category">{t['category']}</span>
+            <h3 class="card-title">{t['name']}</h3>
+            <p class="card-desc">{t['desc'][:100]}...</p>
+            <div class="card-tags">
+                {"".join(f'<span class="tag">{tag}</span>' for tag in t['tags'][:3])}
+            </div>
+        </div>
+    </div>"""
+
+def build_template_detail_modal(t):
+    return f"""
+    <div class="modal-overlay" id="modal-{t['id']}" style="display:none" onclick="if(event.target===this)closeModal('{t['id']}')">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('{t['id']}')"><i class="fas fa-times"></i></button>
+            <div class="modal-header" style="background: {t['color']}">
+                <span class="modal-icon">{t['icon']}</span>
+                <h2>{t['name']}</h2>
+                <p class="modal-category">{t['category']}</p>
+            </div>
+            <div class="modal-body">
+                <div class="modal-preview">
+                    <img src="{t['preview_url']}" alt="{t['name']}" loading="lazy">
+                </div>
+                <div class="modal-info">
+                    <h3>📝 وصف القالب</h3>
+                    <p>{t['desc']}</p>
+                    
+                    <h3>✨ المميزات</h3>
+                    <ul class="features-list">
+                        {"".join(f'<li><i class="fas fa-check-circle"></i> {f}</li>' for f in t['features'])}
+                    </ul>
+                    
+                    <h3>🏷️ الوسوم</h3>
+                    <div class="card-tags">
+                        {"".join(f'<span class="tag">{tag}</span>' for tag in t['tags'])}
+                    </div>
+                    
+                    <div class="cta-box">
+                        <p>💖 أعجبك هذا القالب؟ تواصل معنا لصنع موقعك!</p>
+                        <a href="{TELEGRAM_LINK}" target="_blank" class="btn-telegram">
+                            <i class="fab fa-telegram-plane"></i> تواصل عبر تليغرام {TELEGRAM_USER}
                         </a>
                     </div>
                 </div>
-                <div class="template-info">
-                    <div class="template-header">
-                        <span class="template-category">{template['category']}</span>
-                        <span class="template-price">{template['price']} ر.س</span>
-                    </div>
-                    <h3 class="template-title">{template['title']}</h3>
-                    <p class="template-desc">{template['description']}</p>
-                    
-                    <p class="template-perfect"><strong>🔹 مثالي لـ:</strong> {perfect_for_html}</p>
-                    
-                    <div class="template-features">
-                        {features_html}
-                    </div>
-                    
-                    <div class="template-meta">
-                        <div class="template-rating">
-                            <span class="stars">{stars_html}</span>
-                            <span class="rating-number">{template['rating']}</span>
-                        </div>
-                        <span class="template-sales">
-                            <i class="fas fa-shopping-cart"></i>
-                            {template['sales']} مبيعاً
-                        </span>
-                    </div>
-                    
-                    <div class="template-tech">
-                        {" ".join([f'<span class="tech-tag">{t}</span>' for t in template['tech']])}
-                    </div>
-                </div>
             </div>
-            """
-        
-        # توليد قائمة الفئات
-        categories_html = ""
-        for cat in self.categories:
-            active = "active" if cat['name'] == "الكل" else ""
-            categories_html += f"""
-            <button class="filter-btn {active}" data-filter="{cat['name']}">
-                <span class="filter-icon">{cat['icon']}</span>
-                {cat['name']}
-                <span class="filter-count">{cat['count']}</span>
-            </button>
-            """
-        
-        html = f"""<!DOCTYPE html>
+        </div>
+    </div>"""
+
+def build_index():
+    cards_html = "\n".join(build_template_card(t) for t in TEMPLATES)
+    modals_html = "\n".join(build_template_detail_modal(t) for t in TEMPLATES)
+    
+    # استخراج الفئات الفريدة
+    categories = sorted(set(t['category'] for t in TEMPLATES))
+    categories_btns = "\n".join(f'<button class="filter-btn" onclick="filterTemplates(\'{cat}\', this)">{cat}</button>' for cat in categories)
+    
+    return f"""<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="مدار التقني - أكثر من 500 قالب احترافي للمواقع والتطبيقات. قوالب مجانية واحترافية بتصميم عصري">
-    <meta name="keywords" content="قوالب مواقع, قوالب تطبيقات, مدار التقني, madar tech, templates">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="مدار التقني - قوالب احترافية">
-    <meta property="og:description" content="أكثر من 500 قالب احترافي لمواقع، هبوط ومحافظ شخصية">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200">
-    <meta property="og:type" content="website">
-    
-    <title>مدار التقني | أكثر من 500 قالب احترافي للمواقع والتطبيقات</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- AOS Animation -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="{SITE_DESC}">
+    <title>💖 {COMPANY_NAME} | {SITE_TITLE}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {{
-            --primary: #6366f1;
-            --primary-light: #818cf8;
-            --primary-dark: #4f46e5;
-            --secondary: #8b5cf6;
-            --accent: #a78bfa;
-            --bg-dark: #0a0a1a;
-            --bg-card: #111133;
-            --bg-glass: rgba(17, 17, 51, 0.6);
-            --text: #ffffff;
-            --text-secondary: #94a3b8;
-            --border: rgba(99, 102, 241, 0.2);
-            --border-hover: rgba(99, 102, 241, 0.5);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --gradient-1: linear-gradient(135deg, #6366f1, #8b5cf6);
-            --gradient-2: linear-gradient(135deg, #8b5cf6, #a78bfa);
-            --gradient-hero: linear-gradient(135deg, #0a0a1a 0%, #1a1040 50%, #0a0a2a 100%);
-            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.3);
-            --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.4);
-            --radius: 20px;
-            --radius-sm: 12px;
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }}
-        
-        * {{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }}
-        
-        html {{
-            scroll-behavior: smooth;
-        }}
-        
-        body {{
-            font-family: 'Cairo', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text);
-            overflow-x: hidden;
-            line-height: 1.7;
-        }}
-        
-        /* جسيمات الخلفية */
-        .bg-particles {{
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            background:
-                radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(167, 139, 250, 0.04) 0%, transparent 70%);
-        }}
-        
-        /* نافبار زجاجي */
-        .navbar {{
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(10, 10, 26, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-            transition: var(--transition);
-            padding: 15px 0;
-        }}
-        
-        .navbar.scrolled {{
-            background: rgba(10, 10, 26, 0.95);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }}
-        
-        .nav-container {{
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 0 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }}
-        
-        .logo {{
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }}
-        
-        .logo-icon {{
-            width: 45px;
-            height: 45px;
-            background: var(--gradient-1);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
-        }}
-        
-        .logo-text {{
-            font-size: 22px;
-            font-weight: 800;
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }}
-        
-        .nav-actions {{
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }}
-        
-        .nav-link {{
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            font-size: 15px;
-        }}
-        
-        .nav-link:hover {{
-            color: var(--text);
-        }}
-        
-        .btn-nav {{
-            padding: 12px 28px;
-            background: var(--gradient-1);
-            border: none;
-            border-radius: 50px;
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }}
-        
-        .btn-nav:hover {{
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-glow);
-        }}
-        
-        /* هيرو */
-        .hero {{
-            position: relative;
-            z-index: 1;
-            padding: 160px 20px 100px;
-            text-align: center;
-            background: var(--gradient-hero);
-        }}
-        
-        .hero-badge {{
-            display: inline-block;
-            padding: 8px 22px;
-            background: rgba(99, 102, 241, 0.15);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            margin-bottom: 25px;
-            font-size: 14px;
-            color: var(--primary-light);
-            animation: float 3s ease-in-out infinite;
-        }}
-        
-        @keyframes float {{
-            0%, 100% {{ transform: translateY(0); }}
-            50% {{ transform: translateY(-10px); }}
-        }}
-        
-        .hero-title {{
-            font-size: 3.5rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-            line-height: 1.3;
-            background: linear-gradient(135deg, #fff, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }}
-        
-        .hero-subtitle {{
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 40px;
-            line-height: 1.8;
-        }}
-        
-        .hero-stats {{
-            display: flex;
-            justify-content: center;
-            gap: 50px;
-            flex-wrap: wrap;
-            margin-top: 50px;
-        }}
-        
-        .stat-item {{
-            text-align: center;
-        }}
-        
-        .stat-number {{
-            font-size: 2.5rem;
-            font-weight: 900;
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }}
-        
-        .stat-label {{
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-top: 5px;
-        }}
-        
-        /* قسم القوالب */
-        .templates-section {{
-            position: relative;
-            z-index: 1;
-            padding: 80px 20px;
-        }}
-        
-        .container {{
-            max-width: 1300px;
-            margin: 0 auto;
-        }}
-        
-        .section-header {{
-            text-align: center;
-            margin-bottom: 50px;
-        }}
-        
-        .section-title {{
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #fff, #c4b5fd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }}
-        
-        .section-subtitle {{
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }}
-        
-        /* أزرار الفلترة */
-        .filter-bar {{
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-            margin-bottom: 40px;
-            padding: 20px;
-            background: var(--bg-glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-        }}
-        
-        .filter-btn {{
-            padding: 10px 20px;
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Cairo', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-        }}
-        
-        .filter-btn:hover {{
-            border-color: var(--primary-light);
-            color: var(--text);
-            background: rgba(99, 102, 241, 0.1);
-        }}
-        
-        .filter-btn.active {{
-            background: var(--gradient-1);
-            border-color: transparent;
-            color: white;
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-        }}
-        
-        .filter-count {{
-            font-size: 11px;
-            background: rgba(255,255,255,0.2);
-            padding: 2px 8px;
-            border-radius: 20px;
-        }}
-        
-        /* شبكة القوالب */
-        .templates-grid {{
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
-            gap: 30px;
-        }}
-        
-        .template-card {{
-            background: var(--bg-glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            transition: var(--transition);
-            position: relative;
-            display: none;
-        }}
-        
-        .template-card.visible {{
-            display: block;
-        }}
-        
-        .template-card:hover {{
-            transform: translateY(-12px);
-            border-color: var(--border-hover);
-            box-shadow: 0 30px 60px rgba(99, 102, 241, 0.2);
-        }}
-        
-        .template-badge {{
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            z-index: 2;
-        }}
-        
-        .badge-popular {{
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
-            color: white;
-        }}
-        
-        .badge-new {{
-            background: linear-gradient(135deg, #10b981, #06b6d4);
-            color: white;
-        }}
-        
-        .template-image-wrapper {{
-            position: relative;
-            height: 240px;
-            overflow: hidden;
-        }}
-        
-        .template-image {{
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s;
-        }}
-        
-        .template-card:hover .template-image {{
-            transform: scale(1.08);
-        }}
-        
-        .template-overlay {{
-            position: absolute;
-            inset: 0;
-            background: rgba(10, 10, 26, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.4s;
-        }}
-        
-        .template-card:hover .template-overlay {{
-            opacity: 1;
-        }}
-        
-        .preview-btn {{
-            padding: 12px 30px;
-            background: var(--gradient-1);
-            color: white;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: var(--transition);
-        }}
-        
-        .preview-btn:hover {{
-            box-shadow: var(--shadow-glow);
-            transform: scale(1.05);
-        }}
-        
-        .template-info {{
-            padding: 25px;
-        }}
-        
-        .template-header {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }}
-        
-        .template-category {{
-            font-size: 12px;
-            padding: 4px 12px;
-            background: rgba(99, 102, 241, 0.15);
-            border-radius: 20px;
-            color: var(--primary-light);
-            font-weight: 600;
-        }}
-        
-        .template-price {{
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: var(--success);
-        }}
-        
-        .template-title {{
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text);
-        }}
-        
-        .template-desc {{
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 12px;
-            line-height: 1.6;
-        }}
-        
-        .template-perfect {{
-            color: var(--text-secondary);
-            font-size: 13px;
-            margin-bottom: 12px;
-            line-height: 1.6;
-        }}
-        
-        .template-features {{
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 15px;
-        }}
-        
-        .feature-tag {{
-            font-size: 11px;
-            padding: 4px 10px;
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: 20px;
-            color: #c4b5fd;
-        }}
-        
-        .template-meta {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }}
-        
-        .stars {{
-            color: #f59e0b;
-            letter-spacing: 2px;
-        }}
-        
-        .rating-number {{
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-right: 5px;
-        }}
-        
-        .template-sales {{
-            color: var(--text-secondary);
-            font-size: 13px;
-        }}
-        
-        .template-tech {{
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }}
-        
-        .tech-tag {{
-            font-size: 11px;
-            padding: 3px 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            color: var(--text-secondary);
-        }}
-        
-        /* قسم التواصل */
-        .contact-section {{
-            position: relative;
-            z-index: 1;
-            padding: 80px 20px;
-            text-align: center;
-            background: linear-gradient(180deg, transparent, rgba(99, 102, 241, 0.05), transparent);
-        }}
-        
-        .contact-card {{
-            display: inline-block;
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            padding: 50px 70px;
-            transition: var(--transition);
-        }}
-        
-        .contact-card:hover {{
-            border-color: var(--border-hover);
-            box-shadow: var(--shadow-glow);
-            transform: scale(1.02);
-        }}
-        
-        .contact-icon {{
-            font-size: 4rem;
-            margin-bottom: 20px;
-            animation: float 3s ease-in-out infinite;
-        }}
-        
-        .contact-title {{
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }}
-        
-        .contact-telegram {{
-            font-size: 2rem;
-            font-weight: 900;
-            color: #0088cc;
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            text-decoration: none;
-            transition: var(--transition);
-        }}
-        
-        .contact-telegram:hover {{
-            color: #00a8ff;
-            transform: scale(1.05);
-        }}
-        
-        .contact-desc {{
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-        }}
-        
-        .btn-telegram {{
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 16px 40px;
-            background: linear-gradient(135deg, #0088cc, #00a8ff);
-            color: white;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: var(--transition);
-        }}
-        
-        .btn-telegram:hover {{
-            box-shadow: 0 20px 50px rgba(0, 136, 204, 0.4);
-            transform: translateY(-3px);
-        }}
-        
-        /* فوتر */
-        .footer {{
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 40px;
-            border-top: 1px solid var(--border);
-            color: var(--text-secondary);
-            background: rgba(10, 10, 26, 0.8);
-            backdrop-filter: blur(10px);
-        }}
-        
-        .footer-logo {{
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }}
-        
-        /* Responsive */
-        @media (max-width: 768px) {{
-            .hero-title {{
-                font-size: 2.2rem;
-            }}
-            .hero-stats {{
-                gap: 30px;
-            }}
-            .stat-number {{
-                font-size: 1.8rem;
-            }}
-            .templates-grid {{
-                grid-template-columns: 1fr;
-            }}
-            .contact-card {{
-                padding: 35px 25px;
-            }}
-            .contact-telegram {{
-                font-size: 1.4rem;
-            }}
-            .navbar {{
-                padding: 10px 0;
-            }}
-            .nav-link {{
-                display: none;
-            }}
-        }}
-        
-        /* سكرول بار */
-        ::-webkit-scrollbar {{
-            width: 6px;
-        }}
-        ::-webkit-scrollbar-track {{
-            background: var(--bg-dark);
-        }}
-        ::-webkit-scrollbar-thumb {{
-            background: var(--gradient-1);
-            border-radius: 10px;
-        }}
-        
-        /* تحميل */
-        .loader {{
-            text-align: center;
-            padding: 40px;
-            color: var(--text-secondary);
+        :root{{--glass: rgba(236,72,153,0.03); --border: rgba(236,72,153,0.12); --accent: #ec4899; --accent2: #a855f7; --bg: #0a0508; --card: rgba(30, 15, 30, 0.6)}}
+        *{{margin:0;padding:0;box-sizing:border-box}}
+        body{{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:radial-gradient(ellipse at top, #1a0a15, #0a0a0a, #000);color:#fff;min-height:100vh;overflow-x:hidden}}
+        .bg-orb{{position:fixed;border-radius:50%;filter:blur(130px);opacity:0.15;z-index:0;animation:orbFloat 20s infinite alternate}}
+        .bg-orb:nth-child(1){{width:500px;height:500px;background:#ec4899;top:-100px;left:-100px}}
+        .bg-orb:nth-child(2){{width:400px;height:400px;background:#a855f7;bottom:-100px;right:-100px;animation-delay:5s}}
+        @keyframes orbFloat{{0%{{transform:translate(0,0)scale(1)}}100%{{transform:translate(50px,-50px)scale(1.3)}}}}
+
+        .container{{position:relative;z-index:10;max-width:1300px;margin:0 auto;padding:15px}}
+
+        /* 💖 NAVBAR */
+        .navbar{{display:flex;justify-content:space-between;align-items:center;padding:15px 25px;margin-bottom:25px;background:rgba(10,5,8,0.7);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:1px solid var(--border);border-radius:50px;box-shadow:0 15px 35px rgba(236,72,153,0.08);position:sticky;top:10px;z-index:100;flex-wrap:wrap;gap:10px}}
+        .logo{{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:900;background:linear-gradient(to bottom,#fff,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}}
+        .logo i{{font-size:28px;background:linear-gradient(135deg,#ec4899,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}}
+        .date-badge{{background:rgba(236,72,153,0.15);border:1px solid rgba(236,72,153,0.3);padding:8px 16px;border-radius:25px;font-size:13px;color:#f472b6;display:flex;align-items:center;gap:6px;white-space:nowrap}}
+
+        /* 💖 HERO */
+        .hero{{text-align:center;margin-bottom:30px}}
+        .hero h1{{font-size:clamp(28px,5vw,48px);font-weight:900;background:linear-gradient(to bottom,#fff,#f472b6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}}
+        .hero p{{font-size:17px;opacity:0.7;max-width:600px;margin:0 auto 20px;line-height:1.6}}
+        .hero-stats{{display:flex;justify-content:center;gap:30px;flex-wrap:wrap}}
+        .stat-item{{text-align:center;background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:16px 24px;min-width:120px}}
+        .stat-num{{font-size:28px;font-weight:900;color:#f472b6}}
+        .stat-label{{font-size:12px;opacity:0.6;margin-top:4px}}
+
+        /* 💖 TELEGRAM BANNER */
+        .telegram-banner{{background:linear-gradient(135deg,rgba(0,136,204,0.2),rgba(236,72,153,0.15));border:1px solid rgba(0,136,204,0.3);border-radius:25px;padding:20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:25px;backdrop-filter:blur(20px);flex-wrap:wrap;gap:15px;animation:pulseBanner 2s ease-in-out infinite}}
+        @keyframes pulseBanner{{0%,100%{{box-shadow:0 0 20px rgba(0,136,204,0.15)}}50%{{box-shadow:0 0 40px rgba(0,136,204,0.3)}}}}
+        .telegram-banner p{{font-size:15px;font-weight:600;margin:0}}
+        .btn-telegram{{background:linear-gradient(135deg,#0088cc,#00a8e8);color:#fff;border:none;padding:12px 28px;border-radius:30px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:all 0.3s;box-shadow:0 8px 25px rgba(0,136,204,0.4);white-space:nowrap}}
+        .btn-telegram:hover{{transform:translateY(-3px);box-shadow:0 15px 35px rgba(0,136,204,0.6)}}
+
+        /* 💖 FILTERS */
+        .filters-wrap{{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:25px;justify-content:center}}
+        .filter-btn{{background:rgba(236,72,153,0.06);border:1px solid var(--border);padding:9px 18px;border-radius:25px;color:rgba(255,255,255,0.7);cursor:pointer;font-size:13px;font-weight:500;transition:all 0.3s;white-space:nowrap}}
+        .filter-btn:hover,.filter-btn.active{{background:rgba(236,72,153,0.2);border-color:#ec4899;color:#fff;box-shadow:0 0 15px rgba(236,72,153,0.2)}}
+        .filter-btn.all{{background:linear-gradient(135deg,#ec4899,#a855f7);border:none;color:#fff;font-weight:700}}
+
+        /* 💖 GRID */
+        .templates-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-bottom:40px}}
+        .template-card{{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:all 0.3s;backdrop-filter:blur(20px);animation:fadeUp 0.5s ease}}
+        .template-card:hover{{transform:translateY(-8px);box-shadow:0 25px 50px rgba(236,72,153,0.15);border-color:#ec4899}}
+        @keyframes fadeUp{{from{{opacity:0;transform:translateY(30px)}}to{{opacity:1;transform:translateY(0)}}}}
+        .card-image{{height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}}
+        .card-icon{{font-size:64px;z-index:1;transition:transform 0.3s}}
+        .template-card:hover .card-icon{{transform:scale(1.1)}}
+        .card-overlay{{position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s}}
+        .template-card:hover .card-overlay{{opacity:1}}
+        .btn-preview{{background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:10px 24px;border-radius:25px;cursor:pointer;font-weight:700;font-size:13px}}
+        .card-body{{padding:15px}}
+        .card-category{{font-size:11px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:block}}
+        .card-title{{font-size:16px;font-weight:700;margin-bottom:8px}}
+        .card-desc{{font-size:12px;opacity:0.6;line-height:1.5;margin-bottom:10px}}
+        .card-tags{{display:flex;flex-wrap:wrap;gap:5px}}
+        .tag{{background:rgba(236,72,153,0.1);border:1px solid rgba(236,72,153,0.2);padding:4px 10px;border-radius:15px;font-size:10px;color:#f472b6}}
+
+        /* 💖 MODAL */
+        .modal-overlay{{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(20px);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}}
+        .modal-content{{background:linear-gradient(135deg,#1a0a15,#0d0d1a);border:1px solid rgba(236,72,153,0.3);border-radius:24px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;animation:slideUp 0.4s ease;position:relative}}
+        @keyframes slideUp{{from{{opacity:0;transform:translateY(50px)}}to{{opacity:1;transform:translateY(0)}}}}
+        .modal-close{{position:absolute;top:15px;right:15px;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);border:1px solid rgba(236,72,153,0.4);color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;z-index:10;transition:all 0.3s}}
+        .modal-close:hover{{background:rgba(239,68,68,0.4)}}
+        .modal-header{{padding:40px 25px 25px;text-align:center;border-radius:24px 24px 0 0}}
+        .modal-icon{{font-size:64px;display:block;margin-bottom:10px}}
+        .modal-header h2{{font-size:26px;font-weight:900}}
+        .modal-category{{font-size:13px;opacity:0.7;margin-top:5px}}
+        .modal-body{{padding:25px}}
+        .modal-preview{{border-radius:15px;overflow:hidden;margin-bottom:20px;border:1px solid var(--border)}}
+        .modal-preview img{{width:100%;height:auto;display:block}}
+        .modal-info h3{{font-size:18px;margin:20px 0 10px;color:#f472b6}}
+        .modal-info p{{font-size:14px;opacity:0.8;line-height:1.7}}
+        .features-list{{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:12px 0}}
+        .features-list li{{display:flex;align-items:center;gap:8px;font-size:13px;background:rgba(236,72,153,0.05);padding:10px 14px;border-radius:12px;border:1px solid rgba(236,72,153,0.1)}}
+        .features-list i{{color:#10b981;font-size:16px}}
+        .cta-box{{background:rgba(0,136,204,0.1);border:1px solid rgba(0,136,204,0.3);border-radius:16px;padding:20px;text-align:center;margin-top:20px}}
+        .cta-box p{{margin-bottom:12px;font-weight:600}}
+
+        /* 💖 FOOTER */
+        .footer{{text-align:center;padding:30px 20px;border-top:1px solid var(--border);margin-top:40px}}
+        .footer p{{font-size:12px;opacity:0.5;margin:5px 0}}
+        .footer a{{color:#f472b6;text-decoration:none}}
+
+        /* 💖 MOBILE */
+        @media (max-width:768px){{
+            .navbar{{flex-direction:column;text-align:center;border-radius:25px}}
+            .hero h1{{font-size:26px}}
+            .hero-stats{{gap:10px}}
+            .stat-item{{min-width:90px;padding:12px 16px}}
+            .stat-num{{font-size:22px}}
+            .templates-grid{{grid-template-columns:1fr}}
+            .telegram-banner{{flex-direction:column;text-align:center}}
         }}
     </style>
 </head>
 <body>
-    <div class="bg-particles"></div>
-    
-    <!-- نافبار -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="#" class="logo">
-                <div class="logo-icon">🏢</div>
-                <span class="logo-text">مدار التقني</span>
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+
+    <div class="container">
+        <!-- 💖 NAVBAR -->
+        <nav class="navbar">
+            <div class="logo">
+                <i class="fas fa-gem"></i>
+                <span>{COMPANY_NAME}</span>
+            </div>
+            <div class="date-badge">
+                <i class="fas fa-calendar-alt"></i>
+                <span>{TODAY_DATE_AR}</span>
+            </div>
+        </nav>
+
+        <!-- 💖 HERO -->
+        <header class="hero">
+            <h1>💖 {SITE_TITLE}</h1>
+            <p>{SITE_DESC} - جميع قوالب الديكور للمواقع في مكان واحد</p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-num">{len(TEMPLATES)}+</div>
+                    <div class="stat-label">قالب احترافي</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">{len(categories)}</div>
+                    <div class="stat-label">تصنيف</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">100%</div>
+                    <div class="stat-label">دعم عربي</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 💖 TELEGRAM BANNER -->
+        <div class="telegram-banner">
+            <div>
+                <p style="font-size:18px;margin-bottom:4px">📱 تواصل معنا مباشرة</p>
+                <p style="opacity:0.7;font-weight:400">اختر قالبك وسنصنع لك موقعًا احترافيًا كاملاً</p>
+            </div>
+            <a href="{TELEGRAM_LINK}" target="_blank" class="btn-telegram">
+                <i class="fab fa-telegram-plane"></i> {TELEGRAM_USER}
             </a>
-            <div class="nav-actions">
-                <a href="#templates" class="nav-link">القوالب</a>
-                <a href="#contact" class="nav-link">تواصل</a>
-                <a href="https://t.me/{self.company['telegram'].replace('@', '')}" class="btn-nav" target="_blank">
-                    <i class="fab fa-telegram-plane"></i>
-                    تليجرام
-                </a>
-            </div>
         </div>
-    </nav>
-    
-    <!-- هيرو -->
-    <section class="hero">
-        <span class="hero-badge">🚀 أكثر من 500 قالب احترافي</span>
-        <h1 class="hero-title">اختر أفضل قالب لموقعك<br>الخاص بك</h1>
-        <p class="hero-subtitle">
-            تعرف على مدى عظيم أعمالك يمكن أن تكون مع <strong>مدار التقني</strong>. 
-            قوالب احترافية مصممة بعناية لتناسب جميع المجالات
-        </p>
-        <a href="#templates" class="btn-nav" style="display: inline-flex; padding: 16px 40px; font-size: 16px;">
-            <i class="fas fa-th-large"></i>
-            تصفح القوالب
-        </a>
-        
-        <div class="hero-stats">
-            <div class="stat-item">
-                <div class="stat-number">{self.company['stats']['templates']}</div>
-                <div class="stat-label">قالب احترافي</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">{self.company['stats']['clients']}</div>
-                <div class="stat-label">عميل سعيد</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">{self.company['stats']['downloads']}</div>
-                <div class="stat-label">تحميل</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">⭐ {self.company['stats']['rating']}</div>
-                <div class="stat-label">تقييم</div>
-            </div>
+
+        <!-- 💖 FILTERS -->
+        <div class="filters-wrap">
+            <button class="filter-btn all active" onclick="filterTemplates('all', this)">✨ الكل</button>
+            {categories_btns}
         </div>
-    </section>
-    
-    <!-- قسم القوالب -->
-    <section class="templates-section" id="templates">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">🎨 معرض القوالب الاحترافية</h2>
-                <p class="section-subtitle">اكتشف مجموعتنا المميزة من القوالب الجاهزة لجميع المجالات</p>
-            </div>
-            
-            <!-- فلتر -->
-            <div class="filter-bar" data-aos="fade-up">
-                {categories_html}
-            </div>
-            
-            <!-- شبكة القوالب -->
-            <div class="templates-grid" id="templatesGrid">
-                {templates_html}
-            </div>
-            
-            <div class="loader" id="noResults" style="display: none;">
-                <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
-                <p>لا توجد قوالب في هذه الفئة حالياً</p>
-            </div>
+
+        <!-- 💖 TEMPLATES GRID -->
+        <div class="templates-grid" id="templatesGrid">
+            {cards_html}
         </div>
-    </section>
-    
-    <!-- تواصل -->
-    <section class="contact-section" id="contact">
-        <div class="container">
-            <div class="contact-card" data-aos="zoom-in">
-                <div class="contact-icon">💬</div>
-                <h3 class="contact-title">تواصل معنا مباشرة</h3>
-                <p class="contact-desc">متاحون للمساعدة والاستفسارات على مدار الساعة</p>
-                <a href="https://t.me/{self.company['telegram'].replace('@', '')}" class="contact-telegram" target="_blank">
-                    <i class="fab fa-telegram"></i>
-                    {self.company['telegram']}
-                </a>
-                <br>
-                <a href="https://t.me/{self.company['telegram'].replace('@', '')}" class="btn-telegram" target="_blank">
-                    <i class="fab fa-telegram-plane"></i>
-                    راسلنا الآن على تليجرام
-                </a>
-            </div>
-        </div>
-    </section>
-    
-    <!-- فوتر -->
-    <footer class="footer">
-        <div class="footer-logo">🏢 مدار التقني</div>
-        <p>جميع الحقوق محفوظة © {datetime.now().year}</p>
-        <p style="margin-top: 8px; font-size: 13px;">قوالب احترافية لمستقبل رقمي أفضل</p>
-    </footer>
-    
-    <!-- السكريبتات -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+        <!-- 💖 MODALS -->
+        {modals_html}
+
+        <!-- 💖 FOOTER -->
+        <footer class="footer">
+            <p>💖 {COMPANY_NAME} © {datetime.now().year} - جميع الحقوق محفوظة</p>
+            <p>للتواصل: <a href="{TELEGRAM_LINK}" target="_blank">{TELEGRAM_USER}</a> على تليغرام</p>
+            <p style="margin-top:8px">📅 آخر تحديث: {TODAY_DATE_AR}</p>
+        </footer>
+    </div>
+
     <script>
-        // تهيئة AOS
-        AOS.init({{
-            duration: 800,
-            once: true,
-            offset: 50
-        }});
-        
-        // نافبار سكرول
-        window.addEventListener('scroll', () => {{
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {{
-                navbar.classList.add('scrolled');
-            }} else {{
-                navbar.classList.remove('scrolled');
-            }}
-        }});
-        
-        // فلترة القوالب
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const templateCards = document.querySelectorAll('.template-card');
-        const noResults = document.getElementById('noResults');
-        
-        // إظهار الكل بداية
-        templateCards.forEach(card => card.classList.add('visible'));
-        
-        filterBtns.forEach(btn => {{
-            btn.addEventListener('click', () => {{
-                // إزالة active
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                const filter = btn.getAttribute('data-filter');
-                let visibleCount = 0;
-                
-                templateCards.forEach(card => {{
-                    if (filter === 'الكل' || card.getAttribute('data-category') === filter) {{
-                        card.classList.add('visible');
-                        visibleCount++;
-                    }} else {{
-                        card.classList.remove('visible');
-                    }}
-                }});
-                
-                // إظهار/إخفاء رسالة لا توجد نتائج
-                if (visibleCount === 0) {{
-                    noResults.style.display = 'block';
+        function filterTemplates(cat, btn) {{
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const cards = document.querySelectorAll('.template-card');
+            cards.forEach(card => {{
+                if (cat === 'all' || card.dataset.category === cat) {{
+                    card.style.display = 'block';
+                    card.style.animation = 'none';
+                    card.offsetHeight;
+                    card.style.animation = 'fadeUp 0.5s ease';
                 }} else {{
-                    noResults.style.display = 'none';
+                    card.style.display = 'none';
                 }}
             }});
+        }}
+
+        function showTemplateDetail(id) {{
+            const modal = document.getElementById('modal-' + id);
+            if (modal) {{
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }}
+        }}
+
+        function closeModal(id) {{
+            const modal = document.getElementById('modal-' + id);
+            if (modal) {{
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }}
+        }}
+
+        document.addEventListener('keydown', function(e) {{
+            if (e.key === 'Escape') {{
+                document.querySelectorAll('.modal-overlay').forEach(m => {{
+                    if (m.style.display === 'flex') {{
+                        m.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }}
+                }});
+            }}
         }});
-        
-        console.log('🏢 مدار التقني - معرض القوالب الاحترافية');
-        console.log('💬 تواصل تليجرام: {self.company["telegram"]}');
-        console.log('📊 عدد القوالب: {len(self.templates)}');
+
+        console.log('💖 {COMPANY_NAME} | {TODAY_DATE}');
+        console.log('📱 تواصل: {TELEGRAM_USER}');
     </script>
 </body>
 </html>"""
-        
-        return html
+
+# ═══════════════════════════════════════════════════════════
+# 💖 MAIN
+# ═══════════════════════════════════════════════════════════
+
+def main():
+    print("""
+╔══════════════════════════════════════════════════════════╗
+║                                                          ║
+║  💖  MADAR ALTECHNIA - قوالب مواقع احترافية  ✨     ║
+║     Templates Showcase Generator                         ║
+║                                                          ║
+║  🏢  شركة مدار التقنية                                ║
+║  📱  تواصل: @Go21mk                                   ║
+║  📅  تاريخ اليوم: """ + TODAY_DATE_AR + """                                   ║
+║                                                          ║
+╚══════════════════════════════════════════════════════════╝
+    """)
     
-    def build(self):
-        """بناء الموقع"""
-        print("🏗️ بدء بناء موقع مدار التقني...")
-        
-        html = self.generate_html()
-        with open('index.html', 'w', encoding='utf-8') as f:
-            f.write(html)
-        
-        # معلومات البناء
-        info = {
-            'build_time': datetime.now().isoformat(),
-            'templates_count': len(self.templates),
-            'categories': len(self.categories),
-            'company': self.company['name']
-        }
-        
-        Path('data').mkdir(exist_ok=True)
-        with open('data/build_info.json', 'w', encoding='utf-8') as f:
-            json.dump(info, f, ensure_ascii=False, indent=2)
-        
-        print("✅ تم بناء موقع مدار التقني بنجاح!")
-        print(f"📊 القوالب: {len(self.templates)}")
-        print(f"📂 الفئات: {len(self.categories)}")
-        return True
+    section("GENERATING SITE - إنشاء الموقع")
+    
+    write("index.html", build_index())
+    
+    print(f"""
+{'='*60}
+  💖 DONE - تم الإنشاء بنجاح! ✨
+{'='*60}
+
+  📊 إحصائيات:
+     • {TOTAL_LINES} إجمالي عدد الأسطر
+     • ملف واحد: index.html
+     • {len(TEMPLATES)} قالب ديكور احترافي
+     • {len(set(t['category'] for t in TEMPLATES))} تصنيف مختلف
+
+  💖 القوالب المشمولة:
+     {" • ".join(t['name'] for t in TEMPLATES)}
+
+  📱 للتواصل: {TELEGRAM_USER}
+  📅 تاريخ اليوم: {TODAY_DATE_AR}
+
+  💖 افتح index.html في المتصفح للمعاينة
+  💖 MADAR ALTECHNIA READY! ✨
+{'='*60}
+    """)
 
 if __name__ == "__main__":
-    builder = MadarTechBuilder()
-    builder.build()
+    main()
